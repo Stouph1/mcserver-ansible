@@ -1,0 +1,110 @@
+---
+# - name: Install a list of packages (suitable replacement for 2.11 loop deprecation warning)
+#   ansible.builtin.yum:
+#     name:
+#       - docker
+     
+#     state: latest
+
+
+ 
+- name: Update all packages
+  yum:
+    name: '*'
+    state: latest
+    update_only: yes
+
+
+- name: Yum repolist for Docker
+  yum_repository:
+    name: docker
+    description: yum repository for docker
+    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+    gpgcheck: no
+
+- name: Package Installer For Docker
+  package:
+    name: docker-ce-3:18.09.1-3.el7
+    state: present
+
+- name: Package Installer For Python3 
+  package:
+    name: python3
+    state: present
+
+- name: Package Installer For Python3-pip 
+  package:
+    name: python3-pip
+    state: present
+
+
+- name: Installing python library for the Docker Remote API
+
+  pip:
+    name: docker-py
+
+- name: Start service docker
+  service:
+    name: docker
+    state: started
+
+# - name: login mc-server
+#   command: docker login -u stouph1 -p P@ssword*
+
+# - name: Pull mc-server
+#   command: docker pull stouph1/minecraft-server:latest 
+
+# - name: Run mc-server
+#   command: docker run -d stouph1/minecraft-server  
+
+- name: Create mcserver directory
+  file:
+    path: "/home/ec2-user/mcserver"
+    state: "directory"
+
+
+
+- name: Copy mcserver docker-compose file
+  template:
+    src: ../templates/docker-compose.yml.j2 # y'a pas d'autre manière que de mettre le path relatif ?
+    dest: "/home/ec2-user/mcserver/docker-compose.yml"
+
+
+
+
+- name: Launch mcserver container
+  command: docker compose up -d
+  # state: present
+  args:
+    chdir: "/home/ec2-user/mcserver"
+
+
+
+# docker_package_to_remove:
+#   - docker
+#   - docker-engine
+#   - docker.io
+#   - containerd
+#   - runc
+
+# docker_dependencies:
+#   - ca-certificates
+#   - curl
+#   - gnupg
+#   - lsb-release
+
+# apt_key_url: https://download.docker.com/linux/ubuntu/gpg
+
+# apt_key_id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+# docker:
+#   - docker-ce
+#   - docker-ce-cli
+#   - containerd.io
+
+# docker_users:
+#   - ubuntu
+
+# docker_compose_binary_path: /usr/local/bin/docker-compose
+
+# docker_compose_version: 2.2.3

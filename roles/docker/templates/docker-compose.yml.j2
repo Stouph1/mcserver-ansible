@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  mc:
+    image: itzg/minecraft-server
+    tty: true
+    stdin_open: true
+    ports:
+      - "26666:26666"
+    environment:
+      EULA: "TRUE"
+      DIFFICULTY: "normal"
+      VERSION: "LATEST"
+      MAX_PLAYERS: 35
+      SERVER_NAME: "MERNAXX_SERV"
+    
+      # attach the relative directory 'data' to the container's /data path
+      
+  
+    volumes:
+
+     - ./data:/data 
+    # command: tail -f /dev/null

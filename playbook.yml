@@ -1,0 +1,8 @@
+---
+
+- name: main
+  hosts: mcserver_host
+  become: true
+  roles:
+    - docker
+    # - mcserver
